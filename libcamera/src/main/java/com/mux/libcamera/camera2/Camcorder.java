@@ -2,7 +2,9 @@ package com.mux.libcamera.camera2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.hardware.Camera;
 import android.media.MediaCodecInfo;
+import android.util.Log;
 import android.util.Size;
 import android.view.View;
 
@@ -14,6 +16,11 @@ import com.mux.libcamera.encoders.EncoderAudioAAC;
 import com.mux.libcamera.encoders.EncoderVideoH264;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 
 public class Camcorder extends CamcorderBase {
     private CameraTextureView cameraPreview;
@@ -43,7 +50,7 @@ public class Camcorder extends CamcorderBase {
         audioEncoder = new EncoderAudioAAC(EncoderAudioAAC.SupportedSampleRate[7],
                 MediaCodecInfo.CodecProfileLevel.AACObjectLC,
                 EncoderAudioAAC.SupportBitRate[2]);
-        mSink = new SinkRtmp("rtmp://live.mux.com/app/" + streamKey, capturedSize, listener);
+        mSink = new SinkRtmp("rtmp://192.168.6.31/oflaDemo", capturedSize, listener);
         videoEncoder.setSink(mSink);
         audioEncoder.setSink(mSink);
         audioEncoder.start();

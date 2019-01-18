@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements RtmpHandler.RtmpL
             public void onClick(View v) {
                 try {
                     camera.startRecord(MainActivity.this,
-                            "d27162fa-f8db-663a-101c-ed64e9696e54",
+                            "stream1547719635806",
                             MainActivity.this);
                     Button btn = findViewById(R.id.recoButton);
                     btn.setEnabled(false);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements RtmpHandler.RtmpL
     private void openCamera() {
 
         try {
-            camera = CamcorderBase.CreateCamera(1, this, 0,
+            camera = CamcorderBase.CreateCamera(2, this, 0,
                         new CamcorderBase.OnCameraOpenListener() {
                             @Override
                             public void onOpened(boolean result) {

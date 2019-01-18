@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.MediaRecorder;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
@@ -14,6 +17,9 @@ import com.github.faucamp.simplertmp.RtmpHandler;
 import com.mux.libcamera.encoders.Encoder;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class CamcorderBase {
@@ -34,6 +40,24 @@ public abstract class CamcorderBase {
                 if (list.length > cameraId) {
                     camcorder = new com.mux.libcamera.camera2.Camcorder(ctx, list[cameraId],
                             listener);
+                    // Choose the sizes for camera preview and video recording
+                    CameraCharacteristics characteristics = manager.getCameraCharacteristics(list[cameraId]);
+                    StreamConfigurationMap map = characteristics
+                            .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                    if (map == null) {
+                        throw new RuntimeException("Cannot get available preview/video sizes");
+                    }
+                    camcorder.supportedCaptureSizes = new ArrayList<>();
+                    for(Size size : map.getOutputSizes(MediaRecorder.class)) {
+                        camcorder.supportedCaptureSizes.add(size);
+                    }
+                    Collections.sort(camcorder.supportedCaptureSizes, new Comparator<Size>() {
+                        @Override
+                        public int compare(Size p1, Size p2) {
+                            return p1.getWidth() - p2.getWidth();
+                        }
+                    });
+                    camcorder.setCaptureSizeIndex(0);
                 }
             }
         }
